@@ -20,6 +20,15 @@ var numbersInString = map[string]string{
 	"seven": "7",
 	"eight": "8",
 	"nine":  "9",
+	"1":     "1",
+	"2":     "2",
+	"3":     "3",
+	"4":     "4",
+	"5":     "5",
+	"6":     "6",
+	"7":     "7",
+	"8":     "8",
+	"9":     "9",
 }
 
 var re *regexp.Regexp = regexp.MustCompile("[0-9]")
@@ -93,34 +102,34 @@ func find2Number(line string) int {
 	}
 
 	// for numeric number
-	allDigit := re.FindAllString(line, -1)
+	// allDigit := re.FindAllString(line, -1)
 
-	var firstNumberIdx, lastNumberIdx int
+	// var firstNumberIdx, lastNumberIdx int
 
-	if len(allDigit) == 1 {
-		firstNumberIdx = strings.Index(line, allDigit[0])
-		lastNumberIdx = firstNumberIdx
-		if firstNumberIdx < firstIdx {
-			firstDigit = allDigit[0]
-		}
+	// if len(allDigit) == 1 {
+	// 	firstNumberIdx = strings.Index(line, allDigit[0])
+	// 	lastNumberIdx = firstNumberIdx
+	// 	if firstNumberIdx < firstIdx {
+	// 		firstDigit = allDigit[0]
+	// 	}
 
-		if lastNumberIdx > lastIdx {
-			lastDigit = allDigit[0]
-		}
+	// 	if lastNumberIdx > lastIdx {
+	// 		lastDigit = allDigit[0]
+	// 	}
 
-	} else if len(allDigit) != 0 {
+	// } else if len(allDigit) != 0 {
 
-		firstNumberIdx = strings.Index(line, allDigit[0])
-		lastNumberIdx = strings.Index(line, allDigit[1])
+	// 	firstNumberIdx = strings.Index(line, allDigit[0])
+	// 	lastNumberIdx = strings.Index(line, allDigit[1])
 
-		if firstNumberIdx < firstIdx {
-			firstDigit = allDigit[0]
-		}
+	// 	if firstNumberIdx < firstIdx {
+	// 		firstDigit = allDigit[0]
+	// 	}
 
-		if lastNumberIdx > lastIdx {
-			lastDigit = allDigit[1]
-		}
-	}
+	// 	if lastNumberIdx > lastIdx {
+	// 		lastDigit = allDigit[1]
+	// 	}
+	// }
 
 	val, err := strconv.Atoi(firstDigit + lastDigit)
 
