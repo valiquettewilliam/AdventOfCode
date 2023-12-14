@@ -7,7 +7,9 @@ import (
 	"os"
 )
 
-type RockType rune
+type Platform [][]rune
+
+type RockType = rune
 
 const (
 	Empty   RockType = '.'
@@ -29,12 +31,12 @@ func readData() {
 	scanner := bufio.NewScanner(f)
 	i := 0
 
-	var platform []string
+	var platform Platform
 
 	for scanner.Scan() {
 
-		platform = append(platform, scanner.Text())
-		fmt.Printf("final value: %s\n", platform[i])
+		platform = append(platform, []rune(scanner.Text()))
+		fmt.Printf("value for line %d: %c\n", i, platform[i])
 		i++
 
 	}
@@ -43,6 +45,47 @@ func readData() {
 		log.Fatal(err)
 	}
 
+	copiedP := Copy(platform)
+
+	platform[0][0] = 'A'
+	fmt.Printf("final value: %c\n", platform[0])
+	fmt.Printf("final value: %c\n", copiedP[0])
+
 	fmt.Printf("final value: %d\n", i)
 
+}
+
+func Copy(p Platform) (copiedP Platform) {
+
+	copiedP = make(Platform, len(p))
+	for i := range p {
+		copiedP[i] = make([]rune, len(p[i]))
+		copy(copiedP[i], p[i])
+	}
+
+	return copiedP
+}
+
+func shiftNorth(p Platform) (shiftedPlat Platform) {
+
+	shiftedPlat = Copy(p)
+
+	for j := range p[0] {
+		for i := range p {
+			switch p[i][j] {
+			case Empty:
+				//do nothing
+			case Rounded:
+
+			case Squared:
+				//do nothing
+			default:
+				fmt.Printf("Opps something is not a rock at [%d][%d]: %s\n", i, j, p[i][j])
+
+			}
+
+		}
+
+	}
+	return
 }
