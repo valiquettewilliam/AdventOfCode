@@ -7,16 +7,16 @@ import (
 	"os"
 )
 
-type RockType int64
+type RockType rune
 
 const (
-	Empty RockType = iota
-	Rounded
-	Squared
+	Empty   RockType = '.'
+	Rounded RockType = 'O'
+	Squared RockType = '#'
 )
 
 func main() {
-
+	readData()
 }
 
 func readData() {
@@ -27,19 +27,22 @@ func readData() {
 	defer f.Close()
 
 	scanner := bufio.NewScanner(f)
+	i := 0
+
+	var platform []string
 
 	for scanner.Scan() {
 
-		allLetters := re.FindAllString(line, -1)
-		graph.AddNode()
+		platform = append(platform, scanner.Text())
+		fmt.Printf("final value: %s\n", platform[i])
+		i++
 
-		counter += val
 	}
 
 	if err := scanner.Err(); err != nil {
 		log.Fatal(err)
 	}
 
-	fmt.Printf("final value: %d\n", counter)
+	fmt.Printf("final value: %d\n", i)
 
 }
