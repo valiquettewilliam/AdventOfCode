@@ -22,6 +22,7 @@ func main() {
 }
 
 func readData() {
+	// f, err := os.Open("data.txt")
 	f, err := os.Open("testdata.txt")
 	if err != nil {
 		log.Fatal(err)
@@ -47,12 +48,13 @@ func readData() {
 
 	// fmt.Printf("final value: %d\n", i)
 
-	shiftedP := shiftNorth(platform)
+	// shiftedP := shiftNorth(platform)
+	shiftedP := shiftEast(platform)
 
-	platform.Print()
+	// platform.Print()
 	shiftedP.Print()
 
-	fmt.Println(shiftedP.getNorthLoad())
+	// fmt.Println(shiftedP.getNorthLoad())
 
 }
 
@@ -70,7 +72,7 @@ func Copy(p Platform) (copiedP Platform) {
 func (p Platform) Print() {
 	fmt.Println("Printing of platform:")
 	for i := range p {
-		fmt.Printf("final value: %c\n", p[i])
+		fmt.Printf("%c\n", p[i])
 	}
 }
 
@@ -88,11 +90,18 @@ func (p Platform) getNorthLoad() int {
 	return load
 }
 
-func shiftNorth(p Platform) (shiftedPlat Platform) {
-
-	fmt.Println("start of shiftNorth")
+func shiftEast(p Platform) (shiftedPlat Platform) {
 	shiftedPlat = Copy(p)
-	shiftedPlat.Print()
+
+	for i := range shiftedPlat {
+		shiftedPlat[i] = shiftRight(shiftedPlat[i])
+	}
+
+	return
+}
+
+func shiftNorth(p Platform) (shiftedPlat Platform) {
+	shiftedPlat = Copy(p)
 
 	for j := range shiftedPlat[0] {
 		for i := range shiftedPlat {
@@ -121,5 +130,38 @@ func shiftNorth(p Platform) (shiftedPlat Platform) {
 		}
 
 	}
+	return
+}
+
+func shiftRight(line []RockType) []RockType {
+	return shift(line, 1)
+}
+
+func shiftLeft(line []RockType) []RockType {
+	return shift(line, -1)
+}
+
+func shift(line []RockType, step int) (shiftedLine []RockType) {
+	shiftedLine = make([]RockType, len(line))
+	copy(shiftedLine, line)
+
+	i := 0
+	if step > 0 {
+		i = len(line) - 1
+	}
+
+	for i >= 0 && i < len(shiftedLine) {
+		if shiftedLine[i] == Rounded {
+			//find next non empty space
+			nextI := i + step
+			for nextI >= 0 && nextI < len(shiftedLine) && shiftedLine[nextI] == Empty {
+				nextI += step
+			}
+			shiftedLine[i] = Empty
+			shiftedLine[nextI-step] = Rounded
+		}
+		i -= step
+	}
+
 	return
 }
