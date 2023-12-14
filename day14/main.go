@@ -36,7 +36,7 @@ func readData() {
 	for scanner.Scan() {
 
 		platform = append(platform, []rune(scanner.Text()))
-		fmt.Printf("value for line %d: %c\n", i, platform[i])
+		// fmt.Printf("value for line %d: %c\n", i, platform[i])
 		i++
 
 	}
@@ -45,13 +45,12 @@ func readData() {
 		log.Fatal(err)
 	}
 
-	copiedP := Copy(platform)
+	// fmt.Printf("final value: %d\n", i)
 
-	platform[0][0] = 'A'
-	fmt.Printf("final value: %c\n", platform[0])
-	fmt.Printf("final value: %c\n", copiedP[0])
+	shiftedP := shiftNorth(platform)
 
-	fmt.Printf("final value: %d\n", i)
+	platform.Print()
+	shiftedP.Print()
 
 }
 
@@ -66,21 +65,40 @@ func Copy(p Platform) (copiedP Platform) {
 	return copiedP
 }
 
+func (p Platform) Print() {
+	fmt.Println("Printing of platform:")
+	for i := range p {
+		fmt.Printf("final value: %c\n", p[i])
+	}
+}
+
 func shiftNorth(p Platform) (shiftedPlat Platform) {
 
+	fmt.Println("start of shiftNorth")
 	shiftedPlat = Copy(p)
+	shiftedPlat.Print()
 
-	for j := range p[0] {
-		for i := range p {
-			switch p[i][j] {
+	for j := range shiftedPlat[0] {
+		for i := range shiftedPlat {
+			if i == 0 {
+				continue
+			}
+			switch shiftedPlat[i][j] {
 			case Empty:
 				//do nothing
 			case Rounded:
+				//find next up non empty space
+				upI := i - 1
+				for upI >= 0 && shiftedPlat[upI][j] == Empty {
+					upI--
+				}
+				shiftedPlat[i][j] = Empty
+				shiftedPlat[upI+1][j] = Rounded
 
 			case Squared:
 				//do nothing
 			default:
-				fmt.Printf("Opps something is not a rock at [%d][%d]: %s\n", i, j, p[i][j])
+				fmt.Printf("Opps something is not a rock at [%d][%d]: %c\n", i, j, shiftedPlat[i][j])
 
 			}
 
