@@ -52,6 +52,8 @@ func readData() {
 	platform.Print()
 	shiftedP.Print()
 
+	fmt.Println(shiftedP.getNorthLoad())
+
 }
 
 func Copy(p Platform) (copiedP Platform) {
@@ -70,6 +72,20 @@ func (p Platform) Print() {
 	for i := range p {
 		fmt.Printf("final value: %c\n", p[i])
 	}
+}
+
+func (p Platform) getNorthLoad() int {
+	lenght := len(p)
+	load := 0
+	for i, line := range p {
+		for j := range line {
+			if p[i][j] == Rounded {
+				load += lenght
+			}
+		}
+		lenght--
+	}
+	return load
 }
 
 func shiftNorth(p Platform) (shiftedPlat Platform) {
