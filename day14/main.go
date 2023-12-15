@@ -39,7 +39,7 @@ func readData() {
 	platform.rotate()
 
 	// shiftedP := shiftNorth(platform)
-	// shiftedP := shiftEast(platform)
+	shiftedP := shiftEast(platform)
 
 	platform.Print()
 	// shiftedP.Print()

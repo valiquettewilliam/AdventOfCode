@@ -44,12 +44,22 @@ func transpose(p Platform) Platform {
 	for i := range result {
 		result[i] = make([]rune, yl)
 	}
+
+	var wg sync.WaitGroup
 	for i := 0; i < xl; i++ {
 		for j := 0; j < yl; j++ {
-			result[i][j] = p[j][i]
+			wg.Add(1)
+			go transposeOneCase(p, result, i, j, &wg)
 		}
 	}
+	wg.Wait()
 	return result
+}
+
+func transposeOneCase(src, dest Platform, i, j int, wg *sync.WaitGroup) {
+	dest[i][j] = src[j][i]
+	wg.Done()
+
 }
 
 func shiftEast(p Platform) (shiftedPlat Platform) {
