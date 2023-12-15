@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"slices"
+	"sync"
 )
 
 type Platform [][]rune
@@ -130,10 +131,15 @@ func shift(line []RockType, step int) (shiftedLine []RockType) {
 func (p *Platform) rotate() {
 
 	TPlatform := transpose(*p)
-
+	var wg sync.WaitGroup
 	for i := range TPlatform {
-		slices.Reverse(TPlatform[i])
+		wg.Add(1)
+		go func(row []rune) {
+			defer wg.Done()
+			slices.Reverse(row)
+		}(TPlatform[i])
 	}
+	wg.Wait()
 
 	*p = TPlatform
 }
