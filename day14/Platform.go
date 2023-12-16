@@ -92,28 +92,12 @@ func shiftWest(p Platform) {
 	shiftXAxis(p, -1)
 }
 
-// func shiftNorth(p Platform) (shiftedPlat Platform) {
-// 	shiftedPlat = Copy(p)
-
-// 	for j := range shiftedPlat[0] {
-// 		for i := range shiftedPlat {
-// 			if i == 0 {
-// 				continue
-// 			}
-
-// 			if shiftedPlat[i][j] == Rounded {
-// 				//find next up non empty space
-// 				upI := i - 1
-// 				for upI >= 0 && shiftedPlat[upI][j] == Empty {
-// 					upI--
-// 				}
-// 				shiftedPlat[i][j] = Empty
-// 				shiftedPlat[upI+1][j] = Rounded
-// 			}
-// 		}
-// 	}
-// 	return
-// }
+func shiftSouth(p Platform) {
+	shiftYAxis(p, SOUTH)
+}
+func shiftNorth(p Platform) {
+	shiftYAxis(p, NORTH)
+}
 
 func shiftYAxis(p Platform, d Direction) {
 	var wg sync.WaitGroup
@@ -129,15 +113,14 @@ func shiftYAxis(p Platform, d Direction) {
 
 }
 
-func shiftSouth(p Platform) {
-	shiftYAxis(p, SOUTH)
-}
-func shiftNorth(p Platform) {
-	shiftYAxis(p, NORTH)
-}
-
 func shiftColumn(p Platform, j int, d Direction) {
-	for i := range p {
+
+	i := 0
+	if d < 0 {
+		i = len(p) - 1
+	}
+
+	for i >= 0 && i < len(p) {
 		if p[i][j] == Rounded {
 			//find next non empty space
 			nextI := i + d
@@ -151,28 +134,28 @@ func shiftColumn(p Platform, j int, d Direction) {
 
 }
 
-func shift(line []RockType, step int) {
+func shift(line []RockType, d Direction) {
 	// defer timer("shift")()
 
 	// shiftedLine = make([]RockType, len(line))
 	// copy(shiftedLine, line)
 
 	i := 0
-	if step > 0 {
+	if d > 0 {
 		i = len(line) - 1
 	}
 
 	for i >= 0 && i < len(line) {
 		if line[i] == Rounded {
 			//find next non empty space
-			nextI := i + step
+			nextI := i + d
 			for nextI >= 0 && nextI < len(line) && line[nextI] == Empty {
-				nextI += step
+				nextI += d
 			}
 			line[i] = Empty
-			line[nextI-step] = Rounded
+			line[nextI-d] = Rounded
 		}
-		i -= step
+		i -= d
 	}
 
 }

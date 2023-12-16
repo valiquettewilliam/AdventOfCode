@@ -25,19 +25,19 @@ func main() {
 
 	// shiftedP := shiftNorth(platform)
 	// shiftEast(platform)
-	shiftSouth(platform)
+	// shiftSouth(platform)
 	// shiftedP.Print()
 
-	// nbOfCycle := 100000
+	nbOfCycle := 100000
 
-	// for i := 0; i < nbOfCycle; i++ {
+	for i := 0; i < nbOfCycle; i++ {
 
-	// 	if i%100000 == 0 {
-	// 		fmt.Printf("Progress %d / %d \n", (i/nbOfCycle)*100000, 100000)
-	// 	}
+		if i%100000 == 0 {
+			fmt.Printf("Progress %d / %d \n", (i/nbOfCycle)*100000, 100000)
+		}
 
-	// 	Cycle(platform)
-	// }
+		Cycle(platform)
+	}
 
 	platform.Print()
 	// shiftedP.Print()
@@ -78,10 +78,10 @@ func readData() Platform {
 func Cycle(p Platform) {
 
 	for i := 0; i < 4; i++ {
-		// p = shiftNorth(p)
-		// // p = shiftEast(p)
-		// p = shiftSouth(p)
-		// p = shiftWest(p)
+		shiftNorth(p)
+		shiftEast(p)
+		shiftSouth(p)
+		shiftWest(p)
 	}
 
 }
