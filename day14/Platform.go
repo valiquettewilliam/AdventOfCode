@@ -8,12 +8,18 @@ import (
 
 type Platform [][]rune
 
+type Direction = int
+
 type RockType = rune
 
 const (
-	Empty   RockType = '.'
-	Rounded RockType = 'O'
-	Squared RockType = '#'
+	Empty   RockType  = '.'
+	Rounded RockType  = 'O'
+	Squared RockType  = '#'
+	NORTH   Direction = -1
+	EAST    Direction = 1
+	WEST    Direction = -1
+	SOUTH   Direction = 1
 )
 
 func (p Platform) Print() {
@@ -63,7 +69,7 @@ func transposeOneCase(src, dest Platform, i, j int, wg *sync.WaitGroup) {
 
 }
 
-func shiftSide(p Platform, direction int) {
+func shiftXAxis(p Platform, d Direction) {
 	// defer timer("shiftEast")()
 
 	var wg sync.WaitGroup
@@ -72,71 +78,77 @@ func shiftSide(p Platform, direction int) {
 		go func(plat Platform, i int) {
 			// defer timer("shiftEast")()
 			defer wg.Done()
-			shift(plat[i], direction)
+			shift(plat[i], d)
 		}(p, i)
 	}
 	wg.Wait()
 }
 
 func shiftEast(p Platform) {
-	shiftSide(p, 1)
+	shiftXAxis(p, 1)
 }
 
 func shiftWest(p Platform) {
-	shiftSide(p, -1)
+	shiftXAxis(p, -1)
 }
 
-func shiftNorth(p Platform) (shiftedPlat Platform) {
-	shiftedPlat = Copy(p)
+// func shiftNorth(p Platform) (shiftedPlat Platform) {
+// 	shiftedPlat = Copy(p)
 
-	for j := range shiftedPlat[0] {
-		for i := range shiftedPlat {
-			if i == 0 {
-				continue
-			}
+// 	for j := range shiftedPlat[0] {
+// 		for i := range shiftedPlat {
+// 			if i == 0 {
+// 				continue
+// 			}
 
-			if shiftedPlat[i][j] == Rounded {
-				//find next up non empty space
-				upI := i - 1
-				for upI >= 0 && shiftedPlat[upI][j] == Empty {
-					upI--
-				}
-				shiftedPlat[i][j] = Empty
-				shiftedPlat[upI+1][j] = Rounded
-			}
-		}
+// 			if shiftedPlat[i][j] == Rounded {
+// 				//find next up non empty space
+// 				upI := i - 1
+// 				for upI >= 0 && shiftedPlat[upI][j] == Empty {
+// 					upI--
+// 				}
+// 				shiftedPlat[i][j] = Empty
+// 				shiftedPlat[upI+1][j] = Rounded
+// 			}
+// 		}
+// 	}
+// 	return
+// }
+
+func shiftYAxis(p Platform, d Direction) {
+	var wg sync.WaitGroup
+	for j := range p[0] {
+		wg.Add(1)
+		go func(plat Platform, j int) {
+			// defer timer("shiftEast")()
+			defer wg.Done()
+			shiftColumn(plat, j, d)
+		}(p, j)
 	}
-	return
+	wg.Wait()
+
 }
 
 func shiftSouth(p Platform) {
+	shiftYAxis(p, SOUTH)
+}
+func shiftNorth(p Platform) {
+	shiftYAxis(p, NORTH)
+}
 
-	for j := range p[0] {
-		for i := range p {
-			if i == 0 {
-				continue
+func shiftColumn(p Platform, j int, d Direction) {
+	for i := range p {
+		if p[i][j] == Rounded {
+			//find next non empty space
+			nextI := i + d
+			for nextI >= 0 && nextI < len(p) && p[nextI][j] == Empty {
+				nextI += d
 			}
-
-			if p[i][j] == Rounded {
-				//find next up non empty space
-				downI := i + 1
-				for downI < len(p) && p[downI][j] == Empty {
-					downI++
-				}
-				p[i][j] = Empty
-				p[downI-1][j] = Rounded
-			}
+			p[i][j] = Empty
+			p[nextI-d][j] = Rounded
 		}
 	}
-	return
-}
 
-func shiftRight(line []RockType) {
-	shift(line, 1)
-}
-
-func shiftLeft(line []RockType) {
-	shift(line, -1)
 }
 
 func shift(line []RockType, step int) {

@@ -24,7 +24,8 @@ func main() {
 	// platform.rotate()
 
 	// shiftedP := shiftNorth(platform)
-	shiftEast(platform)
+	// shiftEast(platform)
+	shiftSouth(platform)
 	// shiftedP.Print()
 
 	// nbOfCycle := 100000
@@ -77,9 +78,9 @@ func readData() Platform {
 func Cycle(p Platform) {
 
 	for i := 0; i < 4; i++ {
-		p = shiftNorth(p)
-		// p = shiftEast(p)
-		p = shiftSouth(p)
+		// p = shiftNorth(p)
+		// // p = shiftEast(p)
+		// p = shiftSouth(p)
 		// p = shiftWest(p)
 	}
 
