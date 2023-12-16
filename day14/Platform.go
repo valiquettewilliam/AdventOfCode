@@ -114,7 +114,6 @@ func shiftYAxis(p Platform, d Direction) {
 }
 
 func shiftColumn(p Platform, j int, d Direction) {
-
 	i := 0
 	if d < 0 {
 		i = len(p) - 1
@@ -130,16 +129,12 @@ func shiftColumn(p Platform, j int, d Direction) {
 			p[i][j] = Empty
 			p[nextI-d][j] = Rounded
 		}
+		i -= d
 	}
 
 }
 
 func shift(line []RockType, d Direction) {
-	// defer timer("shift")()
-
-	// shiftedLine = make([]RockType, len(line))
-	// copy(shiftedLine, line)
-
 	i := 0
 	if d > 0 {
 		i = len(line) - 1

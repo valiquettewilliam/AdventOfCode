@@ -9,6 +9,8 @@ import (
 	"time"
 )
 
+var previousPlatform Platform
+
 func main() {
 	platform := readData()
 	//profiling part
@@ -25,10 +27,13 @@ func main() {
 
 	// shiftedP := shiftNorth(platform)
 	// shiftEast(platform)
-	// shiftSouth(platform)
+	shiftNorth(platform)
 	// shiftedP.Print()
+	nbOfCycle := 1000000000
+	// nbOfCycle := 10
 
-	nbOfCycle := 100000
+	start := time.Now()
+	previousPlatform = platform
 
 	for i := 0; i < nbOfCycle; i++ {
 
@@ -36,13 +41,17 @@ func main() {
 			fmt.Printf("Progress %d / %d \n", (i/nbOfCycle)*100000, 100000)
 		}
 
-		Cycle(platform)
+		isStabalized := Cycle(platform)
+		if isStabalized {
+			break
+		}
 	}
 
 	platform.Print()
+	fmt.Printf("took %v\n", time.Since(start))
 	// shiftedP.Print()
 
-	// fmt.Println(platform.getNorthLoad())
+	fmt.Println(platform.getNorthLoad())
 }
 
 func readData() Platform {
@@ -75,14 +84,18 @@ func readData() Platform {
 
 }
 
-func Cycle(p Platform) {
+func Cycle(p Platform) bool {
 
-	for i := 0; i < 4; i++ {
-		shiftNorth(p)
-		shiftEast(p)
-		shiftSouth(p)
-		shiftWest(p)
+	shiftNorth(p)
+	shiftEast(p)
+	shiftSouth(p)
+	shiftWest(p)
+	if IsEqual(p, previousPlatform) {
+		return true
+	} else {
+		previousPlatform = Copy(p)
 	}
+	return false
 
 }
 
@@ -96,6 +109,17 @@ func Copy(p Platform) (copiedP Platform) {
 	}
 
 	return copiedP
+}
+
+func IsEqual(p1, p2 Platform) bool {
+	for i := range p1 {
+		for j := range p1[i] {
+			if p1[i][j] != p2[i][j] {
+				return false
+			}
+		}
+	}
+	return true
 }
 
 func timer(name string) func() {
