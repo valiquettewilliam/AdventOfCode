@@ -10,11 +10,16 @@ import (
 func main() {
 	instructions := readData()
 
+	sum := 0
 	for _, s := range instructions {
 
-		fmt.Println(getHash(s))
-
+		hashVal := getHash(s)
+		fmt.Println(hashVal)
+		sum += hashVal
 	}
+
+	fmt.Println("total value:")
+	fmt.Println(sum)
 
 	//profiling part
 
@@ -43,8 +48,8 @@ func getHash(s string) int {
 
 func readData() []string {
 
-	// f, err := os.Open("data.txt")
-	content, err := os.ReadFile("testdata.txt")
+	// content, err := os.ReadFile("testdata.txt")
+	content, err := os.ReadFile("data.txt")
 	if err != nil {
 		log.Fatal(err)
 	}
