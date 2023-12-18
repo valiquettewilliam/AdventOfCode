@@ -25,39 +25,55 @@ func main() {
 	platform.Print()
 	// platform.rotate()
 
-	// shiftedP := shiftNorth(platform)
+	// shiftColumn(platform, 0, NORTH)
+
+	// shiftNorth(platform)
+	// platform.Print()
+	// shiftWest(platform)
+	// platform.Print()
+	// shiftSouth(platform)
+	// platform.Print()
 	// shiftEast(platform)
-	shiftNorth(platform)
-	// shiftedP.Print()
+	// platform.Print()
 	nbOfCycle := 1000000000
-	// nbOfCycle := 10
+	// nbOfCycle := 3
 
 	start := time.Now()
-	previousPlatform = platform
+	previousPlatform = make(Platform, len(platform))
+	for i := range previousPlatform {
+		previousPlatform[i] = make([]rune, len(platform[i]))
+	}
 
-	for i := 0; i < nbOfCycle; i++ {
+	isStabalized := false
+	for i := 0; i < nbOfCycle && !isStabalized; i++ {
 
-		if i%100000 == 0 {
-			fmt.Printf("Progress %d / %d \n", (i/nbOfCycle)*100000, 100000)
+		logStep := 1000000
+
+		if (i+logStep)%logStep == 0 {
+			fmt.Printf("Progress %f %%\n", (float64(i)/float64(nbOfCycle))*100)
 		}
 
-		isStabalized := Cycle(platform)
+		isStabalized = Cycle(platform)
+		// platform.Print()
 		if isStabalized {
+			fmt.Printf("number of cycle done: %d\n", i)
 			break
 		}
 	}
-
+	fmt.Printf("was stabalized: %t\n", isStabalized)
+	fmt.Printf("previous platoform: \n")
+	previousPlatform.Print()
 	platform.Print()
 	fmt.Printf("took %v\n", time.Since(start))
-	// shiftedP.Print()
+	// // shiftedP.Print()
 
 	fmt.Println(platform.getNorthLoad())
 }
 
 func readData() Platform {
 
-	// f, err := os.Open("data.txt")
-	f, err := os.Open("testdata.txt")
+	f, err := os.Open("data.txt")
+	// f, err := os.Open("testdata.txt")
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -87,28 +103,25 @@ func readData() Platform {
 func Cycle(p Platform) bool {
 
 	shiftNorth(p)
-	shiftEast(p)
-	shiftSouth(p)
 	shiftWest(p)
+	shiftSouth(p)
+	shiftEast(p)
 	if IsEqual(p, previousPlatform) {
 		return true
 	} else {
-		previousPlatform = Copy(p)
+		Copy(p, previousPlatform)
 	}
 	return false
 
 }
 
 // todo move
-func Copy(p Platform) (copiedP Platform) {
+func Copy(src, dest Platform) {
 	// defer timer("Copy")()
-	copiedP = make(Platform, len(p))
-	for i := range p {
-		copiedP[i] = make([]rune, len(p[i]))
-		copy(copiedP[i], p[i])
+	for i := range src {
+		dest[i] = make([]rune, len(src[i]))
+		copy(dest[i], src[i])
 	}
-
-	return copiedP
 }
 
 func IsEqual(p1, p2 Platform) bool {

@@ -2,7 +2,6 @@ package main
 
 import (
 	"fmt"
-	"slices"
 	"sync"
 )
 
@@ -29,46 +28,6 @@ func (p Platform) Print() {
 	}
 }
 
-func (p Platform) getNorthLoad() int {
-	lenght := len(p)
-	load := 0
-	for i, line := range p {
-		for j := range line {
-			if p[i][j] == Rounded {
-				load += lenght
-			}
-		}
-		lenght--
-	}
-	return load
-}
-
-func transpose(p Platform) Platform {
-	// defer timer("transpose")()
-	xl := len(p[0])
-	yl := len(p)
-	result := make(Platform, xl)
-	for i := range result {
-		result[i] = make([]rune, yl)
-	}
-
-	var wg sync.WaitGroup
-	for i := 0; i < xl; i++ {
-		for j := 0; j < yl; j++ {
-			wg.Add(1)
-			go transposeOneCase(p, result, i, j, &wg)
-		}
-	}
-	wg.Wait()
-	return result
-}
-
-func transposeOneCase(src, dest Platform, i, j int, wg *sync.WaitGroup) {
-	dest[i][j] = src[j][i]
-	wg.Done()
-
-}
-
 func shiftXAxis(p Platform, d Direction) {
 	// defer timer("shiftEast")()
 
@@ -85,11 +44,11 @@ func shiftXAxis(p Platform, d Direction) {
 }
 
 func shiftEast(p Platform) {
-	shiftXAxis(p, 1)
+	shiftXAxis(p, EAST)
 }
 
 func shiftWest(p Platform) {
-	shiftXAxis(p, -1)
+	shiftXAxis(p, WEST)
 }
 
 func shiftSouth(p Platform) {
@@ -115,7 +74,7 @@ func shiftYAxis(p Platform, d Direction) {
 
 func shiftColumn(p Platform, j int, d Direction) {
 	i := 0
-	if d < 0 {
+	if d > 0 {
 		i = len(p) - 1
 	}
 
@@ -155,6 +114,21 @@ func shift(line []RockType, d Direction) {
 
 }
 
+func (p Platform) getNorthLoad() int {
+	lenght := len(p)
+	load := 0
+	for i, line := range p {
+		for j := range line {
+			if p[i][j] == Rounded {
+				load += lenght
+			}
+		}
+		lenght--
+	}
+	return load
+}
+
+/*
 func (p *Platform) rotate() {
 	defer timer("rotate")()
 	TPlatform := transpose(*p)
@@ -171,3 +145,31 @@ func (p *Platform) rotate() {
 
 	*p = TPlatform
 }
+
+func transpose(p Platform) Platform {
+	// defer timer("transpose")()
+	xl := len(p[0])
+	yl := len(p)
+	result := make(Platform, xl)
+	for i := range result {
+		result[i] = make([]rune, yl)
+	}
+
+	var wg sync.WaitGroup
+	for i := 0; i < xl; i++ {
+		for j := 0; j < yl; j++ {
+			wg.Add(1)
+			go transposeOneCase(p, result, i, j, &wg)
+		}
+	}
+	wg.Wait()
+	return result
+}
+
+func transposeOneCase(src, dest Platform, i, j int, wg *sync.WaitGroup) {
+	dest[i][j] = src[j][i]
+	wg.Done()
+
+}
+
+*/
