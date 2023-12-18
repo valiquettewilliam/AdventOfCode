@@ -5,11 +5,21 @@ import (
 	"sync"
 )
 
-type Platform [][]rune
+type Platform [][]byte
 
 type Direction = int
 
-type RockType = rune
+type RockType = byte
+
+const (
+	Red int = iota
+	Orange
+	Yellow
+	Green
+	Blue
+	Indigo
+	Violet
+)
 
 const (
 	Empty   RockType  = '.'
@@ -74,15 +84,16 @@ func shiftYAxis(p Platform, d Direction) {
 
 func shiftColumn(p Platform, j int, d Direction) {
 	i := 0
+	lenCol := len(p)
 	if d > 0 {
-		i = len(p) - 1
+		i = lenCol - 1
 	}
 
-	for i >= 0 && i < len(p) {
+	for i >= 0 && i < lenCol {
 		if p[i][j] == Rounded {
 			//find next non empty space
 			nextI := i + d
-			for nextI >= 0 && nextI < len(p) && p[nextI][j] == Empty {
+			for nextI >= 0 && nextI < lenCol && p[nextI][j] == Empty {
 				nextI += d
 			}
 			p[i][j] = Empty
@@ -95,15 +106,16 @@ func shiftColumn(p Platform, j int, d Direction) {
 
 func shift(line []RockType, d Direction) {
 	i := 0
+	lenLine := len(line)
 	if d > 0 {
-		i = len(line) - 1
+		i = lenLine - 1
 	}
 
-	for i >= 0 && i < len(line) {
+	for i >= 0 && i < lenLine {
 		if line[i] == Rounded {
 			//find next non empty space
 			nextI := i + d
-			for nextI >= 0 && nextI < len(line) && line[nextI] == Empty {
+			for nextI >= 0 && nextI < lenLine && line[nextI] == Empty {
 				nextI += d
 			}
 			line[i] = Empty

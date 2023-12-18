@@ -35,14 +35,16 @@ func main() {
 	// platform.Print()
 	// shiftEast(platform)
 	// platform.Print()
-	nbOfCycle := 1000000000
-	// nbOfCycle := 3
+	// nbOfCycle := 1000000000
+	nbOfCycle := 10000000
 
 	start := time.Now()
 	previousPlatform = make(Platform, len(platform))
 	for i := range previousPlatform {
-		previousPlatform[i] = make([]rune, len(platform[i]))
+		previousPlatform[i] = make([]byte, len(platform[i]))
 	}
+
+	NorthLoadHistory := make([]int, 0)
 
 	isStabalized := false
 	for i := 0; i < nbOfCycle && !isStabalized; i++ {
@@ -53,18 +55,22 @@ func main() {
 			fmt.Printf("Progress %f %%\n", (float64(i)/float64(nbOfCycle))*100)
 		}
 
+		// fmt.Printf("cycle number %d\n", i)
 		isStabalized = Cycle(platform)
 		// platform.Print()
 		if isStabalized {
 			fmt.Printf("number of cycle done: %d\n", i)
 			break
 		}
+		NorthLoadHistory = append(NorthLoadHistory, platform.getNorthLoad())
+
 	}
 	fmt.Printf("was stabalized: %t\n", isStabalized)
 	fmt.Printf("previous platoform: \n")
 	previousPlatform.Print()
 	platform.Print()
 	fmt.Printf("took %v\n", time.Since(start))
+	fmt.Printf("%v", NorthLoadHistory)
 	// // shiftedP.Print()
 
 	fmt.Println(platform.getNorthLoad())
@@ -72,8 +78,8 @@ func main() {
 
 func readData() Platform {
 
-	f, err := os.Open("data.txt")
-	// f, err := os.Open("testdata.txt")
+	// f, err := os.Open("data.txt")
+	f, err := os.Open("testdata.txt")
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -86,7 +92,7 @@ func readData() Platform {
 
 	for scanner.Scan() {
 
-		platform = append(platform, []rune(scanner.Text()))
+		platform = append(platform, []byte(scanner.Text()))
 		// fmt.Printf("value for line %d: %c\n", i, platform[i])
 		i++
 
@@ -119,7 +125,7 @@ func Cycle(p Platform) bool {
 func Copy(src, dest Platform) {
 	// defer timer("Copy")()
 	for i := range src {
-		dest[i] = make([]rune, len(src[i]))
+		dest[i] = make([]byte, len(src[i]))
 		copy(dest[i], src[i])
 	}
 }
